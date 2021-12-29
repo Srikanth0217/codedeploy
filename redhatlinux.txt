@@ -1,0 +1,549 @@
+  cd change directory
+cd - :previous working directory
+cd ~ : user home directory
+ls: list
+tree: It will list contents of directories in a tree-like format.
+/--> root directory or parent directory like c drive in wnd
+Linux Homedirectory=Users in windows
+Sri
+Vam
+bin:
+each command binary files are there like mkdir ls cd date etc
+
+sbin:(system binaries)
+it contains some binary files like shutdown start reboot adduser
+
+Types of Users:
+root user /super user:  only one rootuser which is root when we create server it will create
+normal users: sri vam raj mahi
+system users: It is created by third party softwares : jenkins, tomcat
+
+Diff b/w bin and sbin:
+The binaries which are available in sbin only can accessible by root user only
+ The binaries which are available in bin can accessible by every user
+
+etc:
+it contains all the configuration files like shadow passwd groups sudoers motd
+
+lib:(libraries):
+it contains libraries which used by OS.
+
+proc:(process)
+
+All the process information availabe in this.Also it contains file called cpuinfo.
+
+dev:(devices)
+
+we can attach printers, harddisk, etc information.
+
+tmp(Temperory):
+any one can access by any of the user
+
+var:
+system variables information, logs , mails info available.
+
+opt:
+It can be accessible by root user. we install third party softwares like maven,nexus etc.BY default it is empty.
+
+
+Q:what is root user home directory?
+A:/root
+
+
+Basic Commands:
+mkdir
+mkdir -v : v means verbose it displays directory created
+mkdir -p devops/linux/shell/git/maven  :-p means parent
+mkdir  devops/linux/shell/git/maven/tomcat : it will work
+mkdir  devops/linux/shell/git/maven/jenkins/tomcat : it won't work bcoz jenkins dir not created.
+Solution is  mkdir -p devops/linux/shell/git/maven/jenkins/tomcat :now it will work bcoz it will create jenkins and tomcat folders.
+
+mkdir -m : m means mode
+mkdir -m 700 directoryname: with created directory has 700 permissions.
+ls:
+ls -l
+ls -la :hidden files
+ls -lh : human readable format
+ls -lt : timestamp manner it displays
+ls -ltr: reverse timestamp
+
+Q:what is inode?    i=index number
+A:It is a data structure it store the file or information like permissions,foldername,group,size,timestamp etc
+it contains file or dir
+to see inode number ls -li.inode number used by OS.
+
+rmdir : to delete directory.it delete empty directory only.
+rm -rf directoryname.-->it deletes non-empty directories.
+rm : to delete empty files.
+rm -f : to delete non-empty files.
+RHEL:Red hat enterprise linux
+yum:yellowdot update manager
+yum install maven -y
+yum update maven -y
+yum remove maven -y
+
+Ubuntu:
+apt-get install maven -y
+apt-get update maven -y
+apt-get remove maven -y
+
+vi: editor
+cat: to view content
+touch : to create empty file and to change time stamp 
+
+find: to search file or dir. we can find files by permissions,users,groups,filetype,date,size and other possible criteria.
+https://www.tecmint.com/find-directory-in-linux/
+Q:How to find all the empty files in current directory?
+A: find . type f -empty  --> . means current dir and f means file.
+   find ~ type f -empty  empty files in current user home dir.
+   find / type f -empty  empty files in server 
+   find / type d -empty  empty dir in server
+   sudo find . -type d -name "test" to find test directory in current user
+   sudo find . -type d -name "test" -ls for list add -ls
+
+umask:
+           umask      defaultpermission(file)   defaultpermission(dir)
+root       0022          0644                   0755
+normaluser 0002          0664                   0775
+
+                              root      normaluser
+Base permission for file are : 0666     0666
+                               0022     0002
+                               ----     ----
+                               0644     0664
+                             root       nuser
+Base permission for dir are :0777       0777
+                             0022       0002
+                             ----       ----
+                             0755       0775
+
+How to set user umask value permanently?
+goto user home--->.bash_profile add umask as umask 0222
+ for all the users: goto /etc/profile add umask 0222
+
+Ex:
+ec2-user file permission
+664
+rw- rw- r--
+user gp others     -->gp:group
+
+if we create one file devops.txt with ec2-user
+user/owner --> ec2-user
+group --> ec2-user 
+others remaining users like sri sagar vam ....
+
+ec2-user dir permission
+775
+rwx rwx r-x
+
+chmod: to change file permissions
+chmod 777
+chmod 444
+chmod 740
+chmod +r read permissions to user group others
+chmod +x excute 
+chmod ugo+w write
+chmod -R 666 directoryname/   ---> change permissions to directory and inside directory files.
+chmod 777 *.txt ---> change permission to all .txt extension files
+
+
+chown : to change the ownership.
+Note: This command should excute with root user only
+Syn:chown username filename
+Syn:chown -R username dirname
+
+chgrp:to change group.
+syn:chgrp groupname filename
+
+syn: chown username:groupname filename     --> to change user and group name at a time.
+
+
+sudo su -: It will switch to the root user and it will point to the root user home directory and it will load the root user configuration 
+sudo su : It will switch to root user only, exist in previous user directory.
+ 
+cp:
+syn: cp filename destinationdir
+     cp -r dirname destinationdirname
+mv: To rename/move file we use 
+syn: mv presentfilename newfilename  ---> to rename
+     mv filename destinationdirname  ----> to move file
+Note: If you give existed file name to change filename it will over ride the content of that file name.
+
+
+file:to determine file type
+syn: file filename
+
+wc:word count
+syn: wc filename
+o/p format: lines words characters filename
+syn: wc -l filename ---> gives only lines count
+     wc -w filename ---> gives only words count
+     wc -c filename ---> gives only character count
+
+ln: it will create link b/w two files.[hard link & soft link]
+syn-hardlink: ln var/flipcart/flipcart.log tmp/flipcartlink.log ---> here we are creating link of flipcart.log file with flipcartlink.log to access others.
+Here link file has the same properties which original file have.
+syn-softlink: ln -s var/flipcart/flipcart.log tem/flipcartlink.log
+To remove link use command : rm or unlink symlink_name
+
+Hard-link                          soft-link
+Link file having same as           diff properties
+original file properties            like diff inode                 tocheck inode number ls -li
+like same inode 
+If we deleted original file           if we delete original file
+still we can access to link file      we can not access link file
+
+
+vim:Editor
+
+:su nu to assign numbers to lines
+:su nonu to remove line numbers
+:line number --> curser will move to given line number
+/ for search
+
+nan0:
+ctrl+o  --> to save
+ctrl+x ---> to exit
+
+echo: To display what we type
+
+echo 'I am learning linux'
+
+
+cat: To display content.
+cat filename.txt
+cat -n filename.txt   ---> to display with line numbers
+cat -e filename.txt  ---> to display $ symbol at the end of line
+
+head: it will display first 10 lines
+head filename.txt
+head -n 20 filename.txt   ---> to display first 20 lines
+
+
+b  : to display last 10 lines
+tail filename
+tail -n 20 filename
+tail -f filename  ---> it will update last 10 lines of log file if we choose log file
+
+sed(stream editor): to display particular line 
+
+sed -n '108p' filename   ---> p means print
+sed -n '108,120p' filename  ---> it will display from 108 to 120 
+sed is also use to replace particular word in file
+syn: sed 's/red/blue' filename  ---> here we are replacing word red with blue in every line first occurance
+    sed 's/red/blue/g' filename ---> here we are replacing word red with blue in every place in file ---> s-->stream  g-->globally
+Note: above is work on output only
+To change in inside file command is : sed -i 's/red/blue/g' filename
+
+
+more: it will display how much content fit in console like 15 lines or 20 lines to see next lines ctrl+f(f-->forward) to come back ctrl+b b--> backward
+syn: more filename
+
+less : it will act as more command only
+syn less filename
+  to come out of it q or ctrl+c 
+Note: more command only forward and exit after complete 
+      less command forward and backward it won't exit from file till we give q or ctrl+c
+
+sort: to display in ascending order
+syn: sort filename
+     sort -r filename  descending order
+cat filename | sort --> it gives o/p ascending order
+cat filename | sort | tr [a-z] [A-Z]  ---> it gives o/p ascending order and change o/p from lower case to upper case
+tr: translate characters 
+
+grep:(global regular expression print): to search word from particular file[it is like ctrl+f in windows]
+syn: grep srikanth friends.txt ---> here we searching srikanth name in friends.txt file
+     grep -i Srikanth friends.txt ---> it will ignore the case sensitive and give o/p.
+     grep -i 'Srikanth Patel' friends.txt ---> it will search inside single coats word, if we don't use '' it will give error bcoz in name gap is there
+who: it displays how many users logged in
+syn:who press enter or who -H 
+w: it gives server and users details
+
+uptime: it gives details about how long server is running and howmany users logged in.     in this load average means cpu utilization,i.e for one core it should not exceed 1
+
+users: this gives info about how many users logged in
+
+whoami: this gives info about current user logged in
+
+whereis : it gives info of binary files located
+syn: whereis ls    ---> it gives ls binary files and man files location
+ 
+date: it gives server time
+as a root user we can set date syn: date -s "dateformat"
+
+
+df -h : details about hard disk
+
+du : disk usage
+  du -sh ~   ---> it means it gives disk usage of home directory in summary humanreadable manner
+  du -sh ~/particulardirectoryname
+hostname: to check server hostname
+ifconfig: details about ip address
+ip a: it gives more info about ip
+hostname -i: it gives server ip only.Note: do not use this.
+
+
+man: it gives detailed info.it is like help in powershell.
+to come out of this hit q button.
+syn: man ls
+info: it also give detailed information about given command
+syn: info mkdir
+Another way is mkdir --help    here help is option not command
+
+
+whatis: it gives short information
+syn:whatis mkdir
+    whatis mount
+
+service: after install softwares to start or stop service we use this
+syn: service jenkins start
+                     stop
+                     status
+                     restart
+systemctl: after install softwares to start or stop service we use this.Like above one only, it works only RHEL 7 and above versions
+systemctl start jenkins
+systemctl stop jenkins
+systemctl status jenkins
+systemctl restart jenkins
+
+systemctl list-unit-files ---> it is like services.msc in windows
+
+last: user logging info details
+
+
+Process management commands:
+
+ps: to know process we use this
+syn: ps -ef   ---> e means all, f means formatted way
+     ps -ef | grep java ---> it will give all java process ids
+     ps -ef | grep jenkins ---> to know jenkins process id
+
+kill: to kill/terminate a process
+syn:     kill -9 PID ---> to kill process
+Note: based on number it will work , it not only for kill process.
+kill -l: to know kill signal names
+
+
+top:system resources utility monitor tool
+ memory means RAM
+swap memory:when ram is full swap memory going to utilize.It is double than ram size.
+Q:In real time how much ram size we use in servers?
+A:It depends on environment we configure.
+ctrl+c --> terminate
+ctrl+z --> suspend ....to know suspended jobs excute jobs command
+
+sar:(system activity report); it is used to collect the CPU, memory and i/o usage.
+yum  install sysstat -y to install sar, which is need to install not default one.   --->sysstat:system statistics
+
+Archive/Databackup related commands:
+zip: to zip particular file.
+syn: zip -r tobezipfilename requiredzipfilename.zip   ---> for directory
+     zip *.txt devops.zip --> all the txt files will compressed and create zip file
+syn:zip -m requiredzipfilename.zip tobezipfilename
+unzip: to extract zip file.
+syn:unzip filename ---> it will extrct into current directory
+    unzip devops.zip -d /tmp/  ---> it will extract into tmp directory  -->d : directory name
+
+tar: to tar particular file
+syn: tar -cvf tobezipfilename requiredzipfilename.tar  ----> c:create   -->v:verbose --> f:file
+
+tar -xvf : to extract tar file.---> x:extract
+syn:tar -xvf devops.tar
+Note: zip unzip tar we need to install in server.
+
+yum install zip unzip tar -y : to install packages at a time.
+
+useradd: to create new user
+default it create in home directory
+useradd -d /tmp/srikanth ---> to create user home directory as tmp directory
+for root user uid=0
+uid starts from 1000 for normal users
+when we excute useradd command in background it will create one directory in home and it add one entry in /etc/passwd,shadow,group
+
+userdel: to delete user
+syn:userdel -r username
+
+passwd: to set pass word to particular user, as a root user we excute this command.
+syn: passwd username ----> it will store password in shadow file.
+to verify password cat /etc/shadow
+Note:after get the credentials for new user,to change password excute command passwd after login into server
+
+chage: changing the aging information for user
+syn:chage username
+groupadd:
+syn: groupadd groupname  --->to create group
+    usermod -g groupname username ----> to add user to the group.
+    usermod -L username ---> to lock user
+    usermod -U username ---> to unlock user
+groupdel: to delete group
+syn: groupdel groupname
+id: to check user added to group or not  
+syn: id username (or) groups username
+Note: id command gives more info
+
+lid: to know users in particular group
+syn: lid -g groupname
+
+su: switch user
+syn: su - username
+NU --> RU root user password required
+NU --> NU password required
+RU --> NU password not required
+
+visudo or vi /etc/sudoers: to give root permissions to normal user
+ 
+
+Remote Access related commands:
+ssh username@iporhostname
+how to enable password authentication: as root user vi /etc/ssh/sshd_config
+
+scp(secure copy):server to server copy files/dir
+syn:scp filename username@2ndserveriporhostname:/tmp/
+    scp -r directoryname username@2ndserveriporhostname:/tmp/
+free: to check ram size
+syn:free -h
+
+dmidecode: to know memory info  --->it should excute root previleges only
+syn: dmidecode 
+     dmidecode -t 17
+
+mail: to send mails.we need install this one and we need to configure SMTP(simple mail transfer protocal) server
+syn: mail mailid
+     subject
+     mailbody
+  ctrl+d  it will send email
+
+
+
+Crontab(cron table): To schedule jobs we use crontabs.
+crontab -l : to check how many jobs are configured.
+How to ristrict crontab permissions?
+#touch /etc/cron.allow  ---> to give permissions to cron jobs
+ 
+Min     Hour    Dayofmonth Month     Dayofweek      command/script
+(0-59)  (0-23)     (1-31)  (1-12)    (0-6/Sun-Sat)  /opt/dev.sh
+*/1 * * * *  /home/ec2-user/hello.sh > crontaboutput.log 2>&1      -->crontap for every minute   here '>' --->redirect standard output    2&>1 --> standard o/p & std err stores in .log file
+*/1 * * * *  /home/ec2-user/hello.sh >> crontaboutput.log 2>&1   --> append the standard output 
+File Descriptors:
+0 --> std i/p
+1 --> std o/p
+2 --> std err 
+website: crontab-generator.org
+
+crontab -e : to edit/update cron table
+
+crontab -ir : to remove cronjobs
+
+crontab -l -u sri :to check sri user crontabs.
+
+
+
+cal: to verify calender
+cal 3 2020 : it shows 2020 year calender
+cal -3 2021: it shows next 3 months calender
+
+wget: to download softwares
+wget URL
+
+curl: to install softwares.It supports many protocals compare to wget.
+using curl we can access any API
+
+
+ls | tee teeopt.log ---> it will display the output and redirect into teeopt.log file
+
+
+script : it will start record the session, to stop recording excute exit command --> it will create default file name typescript
+script -a filename(ex:typescript) 
+script sri.txt ---> we can give custom name 
+
+history:
+history -c : to clear history
+
+
+ping:to check connectivity between two servers
+ping ip/hostname
+ping -c 5 google.com
+
+telnet: to check port is enabled or not
+telnet google.com 80 
+0-1023 reserved port numbers
+ 
+25 port used for SMTP
+
+Note: Ping used to check the connectivity, Telnet used to check along with connectivity port is enabled or not in remote server.
+
+uname: to check which OS we are using
+ex: linux
+In linux we have many distributions:
+To know distribution check files in /etc/
+For redhat: redhat-release
+For ubuntu: os-release
+To check distribution: excute cat /etc/*release   --> bcoz every distribution file ends with release
+uname -a : it will give detailed information
+uname -r : kernal release
+
+watch : to excute crontab like actions in seconds
+watch date : by default it excute date command every 2 seconds
+watch -n 5 date: it excute date command every 5 seconds
+
+ctrl+d : logout
+
+shutdown: excute sudo shutdown
+ sudo init 0   ---> proper way to shutdown system
+ sudo shutdown -h now  --> it is also working
+ sudo shutdown -h +5
+ halt
+ poweroff
+
+
+awk:It works like cat command but it has special features like to display in required manner
+syn: awk '{print}' friends.txt --> it shows as cat command
+     awk '{print $0}' friends.txt --> it shows as cat command
+     awk '{print $1, $4}' friends.txt --> it print first column and 4th column
+     awk '{print NR, $0}' friends.txt --> it prints o/p with line numbers   --->NR:Number of records
+     awk 'NR==4, NR==9 {print NR, $0}' friends.txt 
+     awk '{print NF, $0}' friends.txt  ---> NF: Number of fields
+     awk '{print $1," - " $4}' friends.txt
+     awk -F : '{print $1}' /etc/passwd
+
+cut: 
+syn: cut -c 1 friends.txt it displays first character in every line
+     cut -c 1,2,3 friends.txt or cut -c -3 friends.txt it displays first  3 characters in every line
+     cut -c 5-20 friends.txt it displays from 5th character to 20th character
+     cut -d ":" -f 1 friends.txt  ---> d: delimiter, f:field
+
+
+syn: cat /etc/passwd | grep "/bin/bash" | cut -d ":" -f 1,6   ---> refer desktop cut command image
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
